@@ -211,7 +211,7 @@ body.intro-lock { overflow: hidden; height: 100vh; }
 #env-intro.flap-open .env-flap { transform: rotateX(-178deg); z-index: 1; }
 .wax {
   position: absolute;
-  left: 50%; bottom: -16px;
+  left: 50%; top: calc(52% - 22px);
   transform: translateX(-50%);
   width: 44px; height: 44px;
   border-radius: 50%;
@@ -219,6 +219,7 @@ body.intro-lock { overflow: hidden; height: 100vh; }
   color: #F6E9DF;
   display: flex; align-items: center; justify-content: center;
   font-size: 19px;
+  z-index: 5;
   box-shadow: 0 3px 8px rgba(107,21,34,0.45), inset 0 0 0 3px rgba(246,233,223,0.18);
   transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
 }
@@ -613,7 +614,8 @@ body.intro-lock { overflow: hidden; height: 100vh; }
         <div class="env-letter-date">2026.10.03</div>
       </div>
       <div class="env-pocket"></div>
-      <div class="env-flap"><div class="wax">囍</div></div>
+      <div class="env-flap"></div>
+      <div class="wax">囍</div>
     </div>
     <div class="env-hint">正在为您启封</div>
   </div>
