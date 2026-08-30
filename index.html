@@ -102,6 +102,141 @@ body::before {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== ENVELOPE INTRO ===== */
+body.intro-lock { overflow: hidden; height: 100vh; }
+
+#env-intro {
+  position: fixed; inset: 0;
+  z-index: 10000;
+  perspective: 1800px;
+}
+#env-intro .door {
+  position: absolute; top: 0; bottom: 0; width: 50.2%;
+  background: var(--paper-warm);
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  transition: transform 1.7s cubic-bezier(0.65, 0, 0.2, 1) 0.35s;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+#env-intro .door-l {
+  left: 0;
+  transform-origin: right center;
+  box-shadow: inset -14px 0 24px -14px rgba(30,24,18,0.45);
+  border-right: 1px solid rgba(184,149,106,0.55);
+}
+#env-intro .door-r {
+  right: 0;
+  transform-origin: left center;
+  box-shadow: inset 14px 0 24px -14px rgba(30,24,18,0.45);
+  border-left: 1px solid rgba(184,149,106,0.55);
+}
+#env-intro.book-open .door-l { transform: rotateY(-158deg); }
+#env-intro.book-open .door-r { transform: rotateY(158deg); }
+#env-intro.fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease, visibility 0.8s; pointer-events: none; }
+
+.env-stage {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+#env-intro.book-open .env-stage { opacity: 0; transform: scale(1.12); }
+
+.envelope {
+  position: relative;
+  width: min(78vw, 330px);
+  aspect-ratio: 330 / 218;
+  perspective: 900px;
+  animation: envIn 1s cubic-bezier(0.22,1,0.36,1) 0.25s both;
+  filter: drop-shadow(0 18px 28px rgba(30,24,18,0.22));
+}
+@keyframes envIn {
+  from { opacity: 0; transform: translateY(26px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.env-body {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #F7F1E6 0%, #EFE6D5 100%);
+  border: 1px solid rgba(30,24,18,0.12);
+  border-radius: 4px;
+}
+.env-letter {
+  position: absolute;
+  left: 5%; right: 5%; top: 5%; height: 90%;
+  background: #FBF7EF;
+  border: 1px solid rgba(30,24,18,0.10);
+  border-radius: 3px;
+  box-shadow: 0 4px 14px rgba(30,24,18,0.14);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  z-index: 2;
+  transition: transform 1.05s cubic-bezier(0.22,1,0.36,1) 0.15s;
+}
+#env-intro.letter-out .env-letter { transform: translateY(-62%); }
+.env-letter-names {
+  font-size: clamp(17px, 5vw, 21px);
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  font-weight: 600;
+}
+.env-letter-sub {
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  color: var(--ink-faint);
+  text-indent: 0.42em;
+}
+.env-letter-date {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+}
+.env-pocket {
+  position: absolute; inset: 0;
+  background: linear-gradient(200deg, #F2EADA 0%, #EAE0CD 100%);
+  clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 0, 50% 46%);
+  border-radius: 4px;
+  z-index: 3;
+}
+.env-flap {
+  position: absolute; left: 0; right: 0; top: 0; height: 52%;
+  background: linear-gradient(180deg, #EFE6D3 0%, #E6DBC4 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  z-index: 4;
+  transition: transform 0.95s cubic-bezier(0.55, 0, 0.35, 1), z-index 0s 0.45s;
+  border-radius: 4px 4px 0 0;
+}
+#env-intro.flap-open .env-flap { transform: rotateX(-178deg); z-index: 1; }
+.wax {
+  position: absolute;
+  left: 50%; bottom: -16px;
+  transform: translateX(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #B03A4C 0%, var(--accent) 45%, var(--accent-deep) 100%);
+  color: #F6E9DF;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+  box-shadow: 0 3px 8px rgba(107,21,34,0.45), inset 0 0 0 3px rgba(246,233,223,0.18);
+  transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+}
+#env-intro.flap-open .wax { opacity: 0; transform: translateX(-50%) scale(0.6); }
+.env-hint {
+  margin-top: 42px;
+  font-size: 11px;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: var(--ink-faint);
+  animation: envHint 2.4s ease-in-out 1.4s infinite;
+}
+@keyframes envHint {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.9; }
+}
+#env-intro.book-open .env-hint { animation: none; opacity: 0; transition: opacity 0.3s; }
+
 /* ===== PAGE SYSTEM ===== */
 .page {
   position: relative;
@@ -465,6 +600,25 @@ body::before {
   <div class="loader-text">请柬</div>
 </div>
 
+<!-- ENVELOPE INTRO -->
+<div id="env-intro" aria-hidden="true">
+  <div class="door door-l"></div>
+  <div class="door door-r"></div>
+  <div class="env-stage">
+    <div class="envelope">
+      <div class="env-body"></div>
+      <div class="env-letter">
+        <div class="env-letter-names">程谦 &amp; 刘之壮</div>
+        <div class="env-letter-sub">婚礼请柬</div>
+        <div class="env-letter-date">2026.10.03</div>
+      </div>
+      <div class="env-pocket"></div>
+      <div class="env-flap"><div class="wax">囍</div></div>
+    </div>
+    <div class="env-hint">正在为您启封</div>
+  </div>
+</div>
+
 <!-- ===== PAGE 1: COVER (full-screen poster with names & date baked in) ===== -->
 <section class="page cover-page">
   <div class="cover-photo torn-container reveal">
@@ -636,6 +790,37 @@ window.addEventListener('load', () => {
     document.getElementById('loader').classList.add('hidden');
   }, 1200);
 });
+
+// Envelope intro: flap opens -> letter rises -> book doors swing open -> reveal
+(function () {
+  var intro = document.getElementById('env-intro');
+  if (!intro) return;
+  document.body.classList.add('intro-lock');
+  var done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    intro.classList.add('book-open');
+    setTimeout(function () {
+      intro.classList.add('fade-out');
+      document.body.classList.remove('intro-lock');
+      setTimeout(function () { intro.remove(); }, 900);
+    }, 2100);
+  }
+  function start() {
+    setTimeout(function () { intro.classList.add('flap-open'); }, 900);
+    setTimeout(function () { intro.classList.add('letter-out'); }, 2100);
+    setTimeout(finish, 3400);
+  }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    finish();
+  } else if (document.readyState === 'complete') {
+    setTimeout(start, 300);
+  } else {
+    window.addEventListener('load', function () { setTimeout(start, 300); });
+  }
+  intro.addEventListener('click', finish);
+})();
 
 // CDN fallback: cascade through jsDelivr mirrors, then same-origin (GitHub Pages)
 const IMG_HOSTS = [
