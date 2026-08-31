@@ -586,7 +586,7 @@ body.intro-lock { overflow: hidden; height: 100vh; }
 <body>
 
 <audio id="bgm" loop preload="auto">
-  <source src="https://cdn.jsdelivr.net/gh/lzz66/wedding-invitation2@c40c3b6/bgm.mp3?v=10" type="audio/mpeg">
+  <source src="https://cdn.jsdelivr.net/gh/lzz66/wedding-invitation2@c40c3b6/bgm.mp3?v=11" type="audio/mpeg">
 </audio>
 <div class="music-btn" id="musicBtn" onclick="toggleMusic()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A8E7E" stroke-width="2" stroke-linecap="round">
@@ -861,23 +861,24 @@ setInterval(() => {
 
 // Music
 let musicPlayed = false;
-// BGM source fallback: CDN first (fast in China), same-origin if it errors or stalls
+// BGM source fallback: CDN first (fast in China), same-origin if it errors or stalls.
+// Never swap once playback has started — switching src mid-play restarts the song (audible stutter).
 (function () {
   const a = document.getElementById('bgm');
   let swapped = false;
   function toLocal() {
     if (swapped) return;
+    // already playing: keep current source, mid-play swap causes an audible restart
+    if (musicPlayed || !a.paused) return;
     swapped = true;
-    const wasPlaying = musicPlayed && !a.paused;
     a.src = 'bgm.mp3';
     a.load();
-    if (wasPlaying) a.play().catch(() => {});
   }
   a.addEventListener('error', toLocal);
   const srcEl = a.querySelector('source');
   if (srcEl) srcEl.addEventListener('error', toLocal);
-  // if not enough data to play within 6s of page load, switch source
-  setTimeout(() => { if (a.readyState < 3) toLocal(); }, 6000);
+  // if not enough data to play within 12s of page load (and not yet playing), switch source
+  setTimeout(() => { if (a.readyState < 3 && a.paused) toLocal(); }, 12000);
 })();
 function toggleMusic() {
   const audio = document.getElementById('bgm');
