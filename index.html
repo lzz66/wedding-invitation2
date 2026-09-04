@@ -787,18 +787,17 @@ body.intro-lock { overflow: hidden; height: 100vh; }
 </section>
 
 <script>
-// Loader
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 1200);
-});
-
 // Envelope intro: flap opens -> letter rises -> book doors swing open -> reveal
+// NOTE: start immediately on script parse — do NOT wait for window 'load',
+// which can be delayed many seconds by slow image/CDN loads and would leave
+// visitors stuck on a closed envelope.
 (function () {
   var intro = document.getElementById('env-intro');
   if (!intro) return;
   document.body.classList.add('intro-lock');
+  // hide the loader right away; the envelope covers it anyway
+  var loader = document.getElementById('loader');
+  if (loader) loader.classList.add('hidden');
   var done = false;
   function finish() {
     if (done) return;
@@ -817,11 +816,11 @@ window.addEventListener('load', () => {
   }
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     finish();
-  } else if (document.readyState === 'complete') {
-    setTimeout(start, 300);
   } else {
-    window.addEventListener('load', function () { setTimeout(start, 300); });
+    setTimeout(start, 300);
   }
+  // safety net: whatever happens, auto-dismiss after 9s so no one is stuck
+  setTimeout(finish, 9000);
   intro.addEventListener('click', finish);
 })();
 
