@@ -838,6 +838,21 @@ document.querySelectorAll('.torn-img').forEach(im => {
   }
 });
 
+// Lookahead preloader: once the intro has played and the first images are in,
+// quietly cache the remaining photos one at a time in reading order —
+// each photo is already local by the time you scroll to it.
+(function () {
+  const queue = Array.from(document.querySelectorAll('.torn-img[loading="lazy"]')).map(im => im.src);
+  let i = 0;
+  function prefetchNext() {
+    if (i >= queue.length) return;
+    const im = new Image();
+    im.onload = im.onerror = () => setTimeout(prefetchNext, 300);
+    im.src = queue[i++];
+  }
+  setTimeout(prefetchNext, 4000);
+})();
+
 // Music
 let musicPlayed = false;
 // BGM source fallback: CDN first (fast in China), same-origin if it errors or stalls.
