@@ -19,6 +19,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" as="image" href="https://cdn.jsdelivr.net/gh/lzz66/wedding-invitation2@c7e5cb8/artistic_photos/art_cover.jpg?v=11">
 <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@300;400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<noscript><style>.torn-img { opacity: 1 !important; }</style></noscript>
 <style>
 /* ===== ZINE CANVAS SYSTEM ===== */
 :root {
@@ -304,7 +305,10 @@ body.intro-lock { overflow: hidden; height: 100vh; }
   width: 100%;
   height: auto;
   filter: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
 }
+.torn-img.loaded { opacity: 1; }
 
 /* ===== DIVIDERS ===== */
 .rule-short {
@@ -823,6 +827,16 @@ setInterval(() => {
     if (r.top < innerHeight * 2 && r.bottom > -innerHeight) nextHost(t);
   });
 }, 8000);
+
+// Graceful image fade-in: keep images invisible until fully decoded,
+// so slow CDN loads never flash a broken-image or half-rendered state.
+document.querySelectorAll('.torn-img').forEach(im => {
+  if (im.complete && im.naturalWidth > 0) {
+    im.classList.add('loaded');
+  } else {
+    im.addEventListener('load', () => im.classList.add('loaded'));
+  }
+});
 
 // Music
 let musicPlayed = false;
